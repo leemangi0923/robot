@@ -147,6 +147,15 @@ svg {
   gap: 18px;
   letter-spacing: -0.8px;
 }
+.app-version {
+  flex-shrink: 0;
+  padding: 4px 7px;
+  border-radius: 5px;
+  background: #eaf0e5;
+  color: #45683c;
+  font: 10px var(--mono);
+  letter-spacing: 0;
+}
 .wordmark-sub {
   font-size: 9px;
   letter-spacing: 1.8px;
@@ -1428,6 +1437,10 @@ dialog::backdrop {
   }
 }
 @media (max-width: 600px) {
+  .app-version {
+    padding: 3px 4px;
+    font-size: 8px;
+  }
   .rail {
     display: none;
   }
@@ -1440,12 +1453,13 @@ dialog::backdrop {
   }
   .wordmark {
     font-size: 17px;
+    gap: 6px;
   }
   .top-right {
     gap: 10px;
   }
   .mode-badge {
-    max-width: 142px;
+    max-width: 120px;
     line-height: 1.6;
     font-size: 8px;
   }
