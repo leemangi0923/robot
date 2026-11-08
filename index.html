@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#26674d" />
+    <title>로봇 연습실 — 코드로 배우는 첫 움직임</title>
+    <meta
+      name="description"
+      content="DRL 코드를 바꾸고 M0609 교육용 3D 로봇의 움직임을 확인하는 한국어 연습 공간"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <aside class="rail">
+      <a class="brand-mark" href="./" aria-label="로봇 연습실 홈"
+        ><svg viewBox="0 0 32 32" fill="none">
+          <path
+            d="M8 26h16M12 25v-5l8-7-8-6 3-4 11 8v5L17 23v2"
+            stroke="currentColor"
+            stroke-width="3"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <circle
+            cx="12"
+            cy="7"
+            r="3"
+            fill="#b9d7a6"
+            stroke="currentColor"
+            stroke-width="2"
+          />
+          <circle
+            cx="23"
+            cy="14"
+            r="3"
+            fill="#b9d7a6"
+            stroke="currentColor"
+            stroke-width="2"
+          /></svg
+      ></a>
+      <div class="rail-line"></div>
+      <button class="rail-btn active" id="practiceNav" aria-label="코드 연습실">
+        <svg viewBox="0 0 24 24">
+          <path d="m8 8-4 4 4 4m8-8 4 4-4 4m-3-9-2 10" /></svg
+        ><span>연습실</span></button
+      ><button class="rail-btn" id="guideNav" aria-label="명령어 도움말">
+        <svg viewBox="0 0 24 24">
+          <path d="M4 5h6l2 2 2-2h6v14h-6l-2 2-2-2H4Zm8 2v14" /></svg
+        ><span>가이드</span>
+      </button>
+      <div class="rail-bottom">
+        <span class="rail-dot"></span><span>LEARN<br />BY DOING</span>
+      </div>
+    </aside>
+    <div class="shell">
+      <header class="topbar">
+        <div class="wordmark">
+          로봇 연습실<span class="wordmark-sub">ROBOT PRACTICE LAB</span>
+        </div>
+        <div class="top-right">
+          <span class="mode-badge"
+            ><i></i>학습용 가상 실행 · 지원 문법 한정</span
+          ><button class="help-btn" id="helpBtn">
+            <span>?</span> 사용 가이드
+          </button>
+        </div>
+      </header>
+      <main>
+        <section class="intro">
+          <div>
+            <div class="eyebrow">
+              <span class="tiny-line"></span>작은 코드, 새로운 움직임
+            </div>
+            <h1>코드로 만드는 첫 움직임<span class="title-dot">.</span></h1>
+            <p>숫자를 바꾸고, 실행하고, 로봇의 움직임을 발견해 보세요.</p>
+          </div>
+          <div class="model-badge">
+            <span class="model-symbol">6</span>
+            <div>
+              <small>EDUCATIONAL MODEL</small
+              ><strong>Doosan M0609 <span>6축</span></strong>
+            </div>
+          </div>
+        </section>
+        <section
+          class="lesson-strip"
+          aria-label="학습 단계"
+          id="lessonStrip"
+        ></section>
+        <div class="workspace-heading">
+          <div>
+            <span class="lesson-kicker" id="lessonCount">LESSON 01</span>
+            <h2 id="lessonTitle">한 점으로 직선 이동</h2>
+            <span id="lessonDesc">숫자 하나가 로봇의 움직임이 됩니다.</span>
+          </div>
+          <button class="text-btn" id="exampleBtn">
+            예제 모아보기 <span>↗</span>
+          </button>
+        </div>
+        <div class="mobile-tabs">
+          <button class="selected" data-tab="code">코드 편집기</button
+          ><button data-tab="scene">3D 시뮬레이션</button>
+        </div>
+        <section class="workspace">
+          <div class="code-side" id="codeSide">
+            <div class="panel editor-panel">
+              <div class="panel-bar">
+                <div class="file-tab">
+                  <span class="file-icon">&lt;/&gt;</span
+                  ><strong>practice.drl</strong
+                  ><span id="savedDot" class="save-dot"></span>
+                </div>
+                <div class="file-tools">
+                  <span id="saveStatus">자동 저장됨</span
+                  ><button
+                    id="importBtn"
+                    title="텍스트 파일 가져오기"
+                    aria-label="텍스트 파일 가져오기"
+                  >
+                    ↥</button
+                  ><button
+                    id="exportBtn"
+                    title="DRL 파일 내보내기"
+                    aria-label="DRL 파일 내보내기"
+                  >
+                    ↧</button
+                  ><button
+                    id="restoreBtn"
+                    title="현재 예제 원본 복원"
+                    aria-label="현재 예제 원본 복원"
+                  >
+                    ↶
+                  </button>
+                </div>
+              </div>
+              <div class="editor-wrap">
+                <div
+                  class="line-numbers"
+                  id="lineNumbers"
+                  aria-hidden="true"
+                ></div>
+                <div class="editor-scroll" id="editorScroll">
+                  <pre id="highlight" aria-hidden="true"></pre>
+                  <textarea
+                    id="code"
+                    spellcheck="false"
+                    autocapitalize="off"
+                    autocomplete="off"
+                    aria-label="DRL 코드 편집기"
+                    wrap="off"
+                  ></textarea>
+                </div>
+              </div>
+              <div class="editor-foot">
+                <span><i></i>DRL · 지원 문법</span
+                ><span id="cursorInfo">Ln 1, Col 1</span><span>UTF-8</span>
+              </div>
+              <div class="run-toolbar">
+                <button class="run-btn" id="runBtn">
+                  <span>▶</span> 실행 <kbd>Ctrl ↵</kbd></button
+                ><button class="control-btn" id="pauseBtn" disabled>
+                  Ⅱ <span>일시정지</span></button
+                ><button
+                  class="control-btn"
+                  id="stepBtn"
+                  title="한 문장씩 실행"
+                >
+                  ▹| <span>한 문장</span></button
+                ><button
+                  class="stop-btn"
+                  id="stopBtn"
+                  title="정지"
+                  aria-label="정지"
+                  disabled
+                >
+                  ■
+                </button>
+              </div>
+            </div>
+            <div class="panel console-panel">
+              <div class="console-bar">
+                <strong><span class="terminal-icon">›_</span> 실행 로그</strong
+                ><span id="logCount">0개 메시지</span
+                ><button id="clearLogBtn" aria-label="로그 지우기">
+                  지우기
+                </button>
+              </div>
+              <div
+                class="console-content"
+                id="console"
+                role="log"
+                aria-live="polite"
+              >
+                <div class="console-empty">
+                  <span class="log-dot"></span> 준비됐어요. 실행 버튼으로 첫
+                  움직임을 확인하세요.
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="scene-side" id="sceneSide">
+            <div class="panel scene-panel">
+              <div class="panel-bar">
+                <div class="scene-label">
+                  <span class="live-dot"></span><strong>3D 시뮬레이션</strong
+                  ><span class="scene-model">M0609</span>
+                </div>
+                <span class="status-pill" id="status">준비</span>
+              </div>
+              <div class="viewport" id="viewport">
+                <div class="view-top">
+                  <span><i></i>베이스 좌표계 <b>DR_BASE</b></span
+                  ><button id="viewReset" title="시점 초기화">
+                    ⌖ <span>시점 초기화</span>
+                  </button>
+                </div>
+                <div class="canvas-host" id="canvasHost"></div>
+                <div class="viewport-label">
+                  <span class="small-cross">＋</span
+                  ><span
+                    >가상 로봇 작업 공간<small
+                      >base_link → link_6 · TCP 오프셋 0</small
+                    ></span
+                  >
+                </div>
+                <div class="axis-key">
+                  <span class="x">X</span><span class="y">Y</span
+                  ><span class="z">Z</span>
+                </div>
+                <div class="view-hint">
+                  드래그하여 회전 <span>·</span> 스크롤하여 확대
+                </div>
+                <div class="loading-overlay" id="loading" hidden>
+                  <span class="spinner"></span
+                  ><strong>코드와 경로를 확인하고 있어요</strong
+                  ><small>검증된 경로를 준비한 후 재생합니다.</small>
+                </div>
+              </div>
+              <div class="playback">
+                <button id="resetPoseBtn" title="자세 초기화">
+                  ↺ <span>자세 초기화</span>
+                </button>
+                <div class="timeline">
+                  <div class="timeline-info">
+                    <span id="motionInfo">이동 0 / 0</span
+                    ><span id="timeInfo">0.00 / 0.00 s</span>
+                  </div>
+                  <div class="progress-track"><div id="progressBar"></div></div>
+                </div>
+                <div class="speed-selector" aria-label="재생 배율">
+                  <button data-speed="0.5">0.5×</button
+                  ><button data-speed="1" class="selected">1×</button
+                  ><button data-speed="2">2×</button>
+                </div>
+              </div>
+              <div class="coordinates">
+                <div class="coord-header">
+                  <strong><span class="target-mark">⊕</span> 현재 TCP</strong
+                  ><span>mm / °</span><span id="currentLine">실행 줄 —</span>
+                </div>
+                <div class="coord-values" id="tcpValues"></div>
+                <div class="target-row">
+                  <span>목표 XYZ</span><code id="targetValues">—, —, —</code
+                  ><span id="loopValue">i = —</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="insight-strip">
+          <div class="insight-icon">✦</div>
+          <div class="insight-copy">
+            <strong id="insightTitle">첫 번째 실험</strong>
+            <p id="insightText">
+              6번 줄의 X 좌표를 362.54에서 342.54로 바꾸면, 목표점은 어디로
+              움직일까요?
+            </p>
+          </div>
+          <button id="insightAction">직접 바꿔 보세요 <span>↗</span></button>
+        </section>
+        <section class="pallet-panel panel" id="palletPanel" hidden>
+          <div class="pallet-title">
+            <div>
+              <span class="eyebrow">COORDINATE EXPLORER</span>
+              <h2>칸마다 좌표를 따라가 보세요.</h2>
+              <p>기준점과 TCP 목표점은 서로 다른 점입니다.</p>
+            </div>
+            <span>4열 × 3행 · 0부터 시작</span>
+          </div>
+          <div class="pallet-content">
+            <div class="pallet-grid" id="palletGrid"></div>
+            <div class="coordinate-equation" id="equation"></div>
+          </div>
+        </section>
+        <footer>
+          <span
+            ><span class="footer-symbol">⌘</span> 배우는 즐거움, 움직이는
+            가능성.</span
+          ><span
+            >Programming Manual V2.12.3 기준 <span class="footer-sep">·</span>
+            <button id="modelInfoBtn">모델·검증 범위</button></span
+          >
+        </footer>
+      </main>
+    </div>
+    <dialog id="helpDialog">
+      <div class="dialog-heading">
+        <div>
+          <span class="eyebrow">ROBOT PRACTICE GUIDE</span>
+          <h2>작게 바꾸며 배워요.</h2>
+        </div>
+        <button class="close-dialog" aria-label="닫기">×</button>
+      </div>
+      <div class="help-content">
+        <h3>실행 흐름</h3>
+        <p>
+          예제를 실행하고 좌표나 속도를 바꿔 다시 실행하세요. 실행은 시작 시점의
+          코드 사본을 사용합니다. 일시정지 후 ‘한 문장’을 누르면 대입문을
+          평가하거나 한 번의 이동을 끝낸 뒤 멈춥니다. 정지는 현재 자세를
+          유지하고, 자세 초기화는 시작 자세로 돌아갑니다. 새 실행은 항상 초기
+          자세에서 시작합니다.
+        </p>
+        <h3>지원 문법</h3>
+        <p>
+          숫자·변수·대입·괄호·음수·+ − * / % //·비교, 리스트 생성·반복·인덱스
+          읽기/대입, range(stop), range(start, stop), for, 블록 if/else, 선택된
+          분기만 평가하는 한 줄 조건식, # 주석, 짧은 문자열, tp_log, wait(초).
+        </p>
+        <p>
+          while, def, import, 여러 줄 문자열은 지원하지 않습니다. 리스트·range
+          최대 1,000개, 총 반복 1,000회, 모션 300개, 문장 5,000개, 경로 표본
+          20,000개, 계산 15초 제한을 적용합니다.
+        </p>
+        <h3>명령어 한눈에 보기</h3>
+        <table>
+          <tr>
+            <th>명령</th>
+            <th>웹앱에서의 동작</th>
+          </tr>
+          <tr>
+            <td><code>posx(X,Y,Z,A,B,C)</code></td>
+            <td>
+              숫자 6개 또는 리스트 1개. XYZ mm, ABC °, Z–Y′–Z″ 오일러 회전.
+            </td>
+          </tr>
+          <tr>
+            <td><code>trans(p, delta)</code></td>
+            <td>
+              베이스 XYZ 변화량으로 새 자세 생성. 원본 유지. 회전 변화량은 0만
+              지원. 생략한 ref와 ref_out은 웹앱에서 DR_BASE로 처리. 문서의 ref
+              기본값은 None, ref_out은 DR_BASE.
+            </td>
+          </tr>
+          <tr>
+            <td><code>movel(p, vel=100, acc=100, ref=DR_BASE)</code></td>
+            <td>
+              베이스 절대 목표로 직선 이동. 방향 유지, 매 이동 끝 정지. vel
+              mm/s, acc mm/s². time·블렌딩·상대 이동·배열형 속도/가속도 미지원.
+            </td>
+          </tr>
+          <tr>
+            <td><code>wait(1.0)</code></td>
+            <td>초 단위 숫자 1개. 0~60초.</td>
+          </tr>
+        </table>
+        <h3>모델과 실제로 검사하는 항목</h3>
+        <p>
+          공식 M0609 URDF의 6개 관절 원점·회전축·각도 한계를 사용합니다.
+          base_link를 베이스, link_6를 플랜지 근사 프레임으로 설정하고 TCP
+          오프셋은 0입니다. tool0의 고정 회전과 base의 450mm 고정 변환은 이
+          체인에 적용하지 않습니다. 화면의 받침대·작업대는 시각화입니다.
+        </p>
+        <p>
+          DRL mm·° → URDF m·rad를 명시적으로 변환합니다. 계산은 mm·rad, 화면은
+          m·Z-up입니다. 각 이동을 2mm 이하 표본으로 나누고 직전 관절 해에서 IK를
+          풉니다. FK 위치 오차 0.004mm, 방향 오차 0.00004rad 미만, 관절 한계를
+          확인합니다. 관절 보간의 ¼·½·¾ 지점을 다시 검사해 위치 오차 0.05mm·방향
+          0.0005rad 이하, 표본 간 관절 변화 0.025rad 이하로 보강합니다.
+        </p>
+        <p>
+          시간은 정지→정지 삼각형·사다리꼴 프로파일입니다. 0.5×·1×·2×는 재생
+          배율이며 vel·acc를 바꾸지 않습니다. 작업대·자기 충돌, 하중, 힘 제어,
+          실제 제어기의 안전 설정·시간 보정은 검사하지 않습니다.
+        </p>
+        <h3>문서·라이선스·확인 필요</h3>
+        <p>
+          명령 문서 기준: Doosan Programming Manual V2.12.3 (§2.1.2, §2.1.3,
+          §2.3.2). DART-Studio v2.12는 편집기 버전입니다. 실제 제어기 소프트웨어
+          버전과 해당 제어기에서의 예제 실행 결과는
+          <strong>확인 필요</strong>입니다. 리스트 반복·한 줄 조건식·//의 웹앱
+          지원과 대상 제어기 검증 결과를 구분합니다.
+        </p>
+        <p>
+          URDF: humble 리비전 d276f9f9712118a18bad1d9ee1d7d4eab10a4ea8,
+          BSD-3-Clause. 외형은 자체 제작 단순 형상이며 원본 메시를 포함하지
+          않습니다. Three.js 0.170.0, MIT.
+        </p>
+        <div class="help-links">
+          <a
+            href="https://manual.doosanrobotics.com/"
+            target="_blank"
+            rel="noreferrer"
+            >공식 매뉴얼 ↗</a
+          ><a href="./README.md" target="_blank">사용·배포·테스트 기록 ↗</a
+          ><a href="./source.zip" download>전체 소스 받기 ↓</a>
+        </div>
+      </div>
+    </dialog>
+    <dialog id="examplesDialog">
+      <div class="dialog-heading">
+        <div>
+          <span class="eyebrow">LEARN AT YOUR PACE</span>
+          <h2>다음 움직임을 골라 보세요.</h2>
+        </div>
+        <button class="close-dialog" aria-label="닫기">×</button>
+      </div>
+      <p class="dialog-note">작성 중인 코드는 예제별로 자동 보관됩니다.</p>
+      <div id="examplesList"></div>
+    </dialog>
+    <input
+      type="file"
+      id="fileInput"
+      accept=".txt,.drl,.py,text/plain"
+      hidden
+    />
+    <div class="toast" id="toast" role="status" hidden></div>
+    <script type="module" src="js/app.js"></script>
+  </body>
+</html>
